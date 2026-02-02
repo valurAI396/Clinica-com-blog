@@ -78,7 +78,7 @@ export const team: TeamMember[] = [
     approach: 'Terapia Cognitivo-Comportamental e Integrativa',
     bio: 'A Sara é Psicóloga Clínica e autora do projeto "Pra semana à mesma hora".\n\nCom uma abordagem descomplicada e empática, dedica-se à intervenção com jovens adultos e adultos, criando um espaço seguro para explorar temas como a ansiedade, a gestão emocional, as relações e a construção da identidade. O seu objetivo é tornar a psicologia acessível e ajudar cada pessoa a encontrar a sua própria voz.',
     academic: ['Mestrado Integrado em Psicologia', 'Membro Efetivo da Ordem dos Psicólogos Portugueses'],
-    image: 'https://picsum.photos/id/65/400/500',
+    image: '/images/sara_bartolomeu.jpeg',
     email: 'sbfbartolomeu@gmail.com',
     phone: '925 103 934',
     website: 'https://prasemanaamesmahora.pt/'
@@ -105,7 +105,7 @@ export const team: TeamMember[] = [
     academic: ['Mestrado em Psicologia Clínica Sistémica Familiar e Comunitária (2012) - Faculdade de Psicologia da Universidade de Lisboa', 'Doutoramento em Psicologia (2022) - Instituto Universitário de Lisboa - Iscte-iul', 'Formação em Fundamentos em Psicoterapia pela Dança e Movimento (2024) - Faculdade de Psicologia da Universidade de Coimbra', 'Membro Efetivo da OPP'],
     image: 'https://picsum.photos/id/342/400/500',
     email: 'example@email.com',
-    phone:'933 692 445'
+    phone: '933 692 445'
   }
 ];
 
@@ -197,7 +197,7 @@ export const homeContent: HomeContent = {
     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80',
     avatars: [
       'https://picsum.photos/id/64/100/100',
-      'https://picsum.photos/id/65/100/100',
+      '/images/sara_bartolomeu.jpeg',
       'https://picsum.photos/id/91/100/100',
       'https://picsum.photos/id/342/100/100'
     ]
