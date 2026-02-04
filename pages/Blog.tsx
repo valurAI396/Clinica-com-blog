@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { team } from '../data';
+import { team as allTeam } from '../data';
 import { Clock, ArrowRight, Loader2 } from 'lucide-react';
 import { contentfulClient } from '../lib/contentful';
 import { BlogPost } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 const Blog: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language, t } = useLanguage();
+  const team = allTeam[language];
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,7 +25,7 @@ const Blog: React.FC = () => {
           title: item.fields.title,
           excerpt: item.fields.excerpt,
           content: '', // Not needed for the grid view
-          date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString('pt-PT', {
+          date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString(language === 'pt' ? 'pt-PT' : 'en-US', {
             day: '2-digit',
             month: 'long',
             year: 'numeric'
@@ -42,7 +45,7 @@ const Blog: React.FC = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [language]);
 
   return (
     <div className="pt-32 min-h-screen bg-clarity-bg pb-20">
@@ -51,10 +54,9 @@ const Blog: React.FC = () => {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 fade-in-up">
           <span className="text-clarity-primary font-medium tracking-widest uppercase text-sm mb-4 block">Journal</span>
-          <h1 className="font-serif text-4xl md:text-6xl text-stone-800 mb-6">Reflexões & Artigos</h1>
+          <h1 className="font-serif text-4xl md:text-6xl text-stone-800 mb-6">{t('blog.title')}</h1>
           <p className="text-stone-600 text-lg leading-relaxed">
-            Um espaço de partilha sobre psicologia, bem-estar e saúde mental.
-            Informação curada pela nossa equipa clínica.
+            {t('blog.subtitle')}
           </p>
         </div>
 
@@ -62,11 +64,11 @@ const Blog: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-clarity-primary mb-4" size={40} />
-            <p className="text-stone-500 font-serif italic text-lg text-center">A carregar artigos...</p>
+            <p className="text-stone-500 font-serif italic text-lg text-center">{t('home.blog.loading')}</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-[3rem] border border-dashed border-stone-200">
-            <p className="text-stone-500 font-serif italic text-lg">Ainda não foram publicados artigos.</p>
+            <p className="text-stone-500 font-serif italic text-lg">{t('home.blog.empty')}</p>
           </div>
         ) : (
           /* Blog Grid */
@@ -118,7 +120,9 @@ const Blog: React.FC = () => {
                             <span className="text-xs font-medium text-stone-600">{author.name}</span>
                           </>
                         ) : (
-                          <span className="text-xs font-medium text-stone-600">Equipa Clínica</span>
+                          <span className="text-xs font-medium text-stone-600">
+                            {language === 'pt' ? 'Equipa Clínica' : 'Clinical Team'}
+                          </span>
                         )}
                       </div>
                       <span className="text-clarity-primary opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 duration-300">

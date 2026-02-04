@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { team } from '../data';
+import { team as allTeam } from '../data';
 import { ChevronLeft, Clock, Calendar, Share2, Linkedin, Facebook, Loader2 } from 'lucide-react';
 import { contentfulClient } from '../lib/contentful';
 import { BlogPost as BlogPostType } from '../types';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
+import { useLanguage } from '../context/LanguageContext';
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
+  const team = allTeam[language];
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +32,7 @@ const BlogPost: React.FC = () => {
             title: item.fields.title,
             excerpt: item.fields.excerpt,
             content: item.fields.content, // This is now a Rich Text object
-            date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString('pt-PT', {
+            date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString(language === 'pt' ? 'pt-PT' : 'en-US', {
               day: '2-digit',
               month: 'long',
               year: 'numeric'
@@ -52,13 +55,13 @@ const BlogPost: React.FC = () => {
 
     fetchPost();
     window.scrollTo(0, 0);
-  }, [id, navigate]);
+  }, [id, navigate, language]);
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-clarity-bg">
         <Loader2 className="animate-spin text-clarity-primary mb-4" size={40} />
-        <p className="text-stone-500 font-serif italic text-lg">A carregar artigo...</p>
+        <p className="text-stone-500 font-serif italic text-lg">{t('home.blog.loading')}</p>
       </div>
     );
   }
@@ -96,7 +99,7 @@ const BlogPost: React.FC = () => {
           <div className="max-w-4xl mx-auto px-6 w-full text-white">
             <Link to="/blog" className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
               <ChevronLeft size={18} />
-              <span className="ml-1 text-sm font-medium">Voltar ao Blog</span>
+              <span className="ml-1 text-sm font-medium">{t('blog.back')}</span>
             </Link>
 
             <div className="flex items-center gap-4 mb-4 text-sm font-medium">
@@ -138,10 +141,12 @@ const BlogPost: React.FC = () => {
 
         {/* Share & Tags */}
         <div className="mt-16 pt-8 border-t border-stone-200 flex flex-col sm:flex-row justify-between items-center gap-6">
-          <p className="text-stone-500 font-serif italic text-lg">Gostou deste artigo?</p>
+          <p className="text-stone-500 font-serif italic text-lg">
+            {language === 'pt' ? 'Gostou deste artigo?' : 'Did you like this article?'}
+          </p>
           <div className="flex gap-3">
             <button className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-100 text-stone-600 hover:bg-clarity-primary hover:text-white transition-all text-sm font-medium">
-              <Share2 size={16} /> Partilhar
+              <Share2 size={16} /> {language === 'pt' ? 'Partilhar' : 'Share'}
             </button>
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 text-stone-600 hover:bg-[#0077b5] hover:text-white transition-all">
               <Linkedin size={18} />
@@ -161,12 +166,14 @@ const BlogPost: React.FC = () => {
               </div>
             </Link>
             <div>
-              <h4 className="font-serif text-xl font-bold text-stone-800 mb-2">Sobre o Autor</h4>
+              <h4 className="font-serif text-xl font-bold text-stone-800 mb-2">
+                {language === 'pt' ? 'Sobre o Autor' : 'About the Author'}
+              </h4>
               <p className="text-stone-600 text-sm leading-relaxed mb-4">
                 {author.bio.slice(0, 150)}...
               </p>
               <Link to={`/equipa/${author.id}`} className="text-clarity-primary font-medium text-sm hover:underline">
-                Ver perfil completo
+                {language === 'pt' ? 'Ver perfil completo' : 'View full profile'}
               </Link>
             </div>
           </div>
@@ -176,13 +183,17 @@ const BlogPost: React.FC = () => {
       {/* Newsletter / CTA */}
       <div className="bg-clarity-primary py-20 px-6 text-center">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-serif text-3xl text-white mb-4">A sua saúde mental em primeiro lugar.</h2>
-          <p className="text-white/80 mb-8">Marque uma consulta de avaliação e comece o seu percurso.</p>
+          <h2 className="font-serif text-3xl text-white mb-4">
+            {language === 'pt' ? 'A sua saúde mental em primeiro lugar.' : 'Your mental health first.'}
+          </h2>
+          <p className="text-white/80 mb-8">
+            {language === 'pt' ? 'Marque uma consulta de avaliação e comece o seu percurso.' : 'Book an assessment appointment and start your journey.'}
+          </p>
           <Link
             to="/contactos"
             className="inline-block bg-white text-clarity-primary px-8 py-3 rounded-full font-bold hover:bg-stone-100 transition-colors shadow-lg"
           >
-            Agendar Consulta
+            {t('nav.button')}
           </Link>
         </div>
       </div>

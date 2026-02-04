@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
-import { contactInfo } from '../data';
-
+import { contactInfo as allContactInfo } from '../data';
+import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 
 const Contact: React.FC = () => {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const { language, t } = useLanguage();
+  const contactInfo = allContactInfo[language];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,12 +33,12 @@ const Contact: React.FC = () => {
         setFormStatus('success');
       } else {
         console.error("Error", data);
-        alert("Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente.");
+        alert(language === 'pt' ? "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente." : "An error occurred while sending the message. Please try again.");
         setFormStatus('idle');
       }
     } catch (err) {
       console.error("Error", err);
-      alert("Erro de conexão. Verifique a sua internet.");
+      alert(language === 'pt' ? "Erro de conexão. Verifique a sua internet." : "Connection error. Check your internet.");
       setFormStatus('idle');
     }
   };
@@ -56,10 +58,14 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-clarity-primary font-medium tracking-widest uppercase text-sm mb-4 block">Contactos</span>
-          <h1 className="font-serif text-4xl md:text-6xl text-stone-800 mb-6">Estamos à sua espera.</h1>
+          <span className="text-clarity-primary font-medium tracking-widest uppercase text-sm mb-4 block">
+            {t('nav.contact')}
+          </span>
+          <h1 className="font-serif text-4xl md:text-6xl text-stone-800 mb-6">
+            {language === 'pt' ? 'Estamos à sua espera.' : "We're waiting for you."}
+          </h1>
           <p className="text-stone-600 text-lg leading-relaxed">
-            Um espaço pensado para acolher, escutar e estar.
+            {language === 'pt' ? 'Um espaço pensado para acolher, escutar e estar.' : 'A space designed to welcome, listen, and be.'}
           </p>
         </motion.div>
 
@@ -78,17 +84,19 @@ const Contact: React.FC = () => {
                 <MapPin size={24} />
               </div>
               <div>
-                <h3 className="font-serif text-xl text-stone-800 mb-2">Visite-nos</h3>
+                <h3 className="font-serif text-xl text-stone-800 mb-2">{t('contact.info.address')}</h3>
                 <p className="text-stone-600 whitespace-pre-line leading-relaxed">{contactInfo.address}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <p className="text-stone-400 text-sm italic">No coração de Viseu.</p>
+                  <p className="text-stone-400 text-sm italic">
+                    {language === 'pt' ? 'No coração de Viseu.' : 'In the heart of Viseu.'}
+                  </p>
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${mapAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-clarity-primary text-sm font-medium hover:underline ml-2"
                   >
-                    Abrir no Maps →
+                    {language === 'pt' ? 'Abrir no Maps' : 'Open in Maps'} →
                   </a>
                 </div>
               </div>
@@ -100,7 +108,7 @@ const Contact: React.FC = () => {
                 <div className="bg-clarity-accent p-3 rounded-xl text-clarity-primary shrink-0">
                   <Phone size={24} />
                 </div>
-                <h3 className="font-serif text-xl text-stone-800">Telefones</h3>
+                <h3 className="font-serif text-xl text-stone-800">{language === 'pt' ? 'Telefones' : 'Phones'}</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -136,7 +144,7 @@ const Contact: React.FC = () => {
                 <div className="bg-clarity-accent p-3 rounded-xl text-clarity-primary w-fit mb-4">
                   <Clock size={24} />
                 </div>
-                <h3 className="font-medium text-stone-800 mb-2">Horário</h3>
+                <h3 className="font-medium text-stone-800 mb-2">{t('contact.info.hours')}</h3>
                 {contactInfo.hours.map((hour, idx) => (
                   <p key={idx} className="text-stone-600 text-sm">{hour}</p>
                 ))}
@@ -151,40 +159,42 @@ const Contact: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="lg:col-span-5 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-stone-100 sticky top-32"
           >
-            <h2 className="font-serif text-2xl md:text-3xl text-stone-800 mb-6">Marcar Consulta</h2>
+            <h2 className="font-serif text-2xl md:text-3xl text-stone-800 mb-6">{t('nav.button')}</h2>
 
             {formStatus === 'success' ? (
               <div className="text-center py-12 bg-clarity-accent/30 rounded-[2rem]">
                 <div className="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-clarity-primary shadow-sm">
                   <Send size={24} />
                 </div>
-                <h3 className="text-xl font-serif text-stone-800 mb-2">Mensagem Enviada</h3>
+                <h3 className="text-xl font-serif text-stone-800 mb-2">
+                  {language === 'pt' ? 'Mensagem Enviada' : 'Message Sent'}
+                </h3>
                 <p className="text-stone-600 text-sm px-4 mb-6">
-                  Entraremos em contacto brevemente.
+                  {language === 'pt' ? 'Entraremos em contacto brevemente.' : 'We will get in touch shortly.'}
                 </p>
                 <button
                   onClick={() => setFormStatus('idle')}
                   className="px-5 py-2 rounded-full border border-clarity-primary text-clarity-primary hover:bg-clarity-primary hover:text-white transition-colors text-xs font-medium"
                 >
-                  Enviar nova mensagem
+                  {language === 'pt' ? 'Enviar nova mensagem' : 'Send new message'}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="name" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">Nome</label>
+                    <label htmlFor="name" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">{t('contact.form.name')}</label>
                     <input
                       type="text"
                       id="name"
                       name="name"
                       required
                       className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-clarity-primary focus:ring-1 focus:ring-clarity-primary outline-none transition-all bg-stone-50 focus:bg-white text-sm"
-                      placeholder="Nome completo"
+                      placeholder={language === 'pt' ? "Nome completo" : "Full name"}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="phone" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">Telemóvel</label>
+                    <label htmlFor="phone" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">{t('contact.form.phone')}</label>
                     <input
                       type="tel"
                       id="phone"
@@ -209,20 +219,20 @@ const Contact: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="service" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">Serviço</label>
+                  <label htmlFor="service" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">{language === 'pt' ? 'Serviço' : 'Service'}</label>
                   <div className="relative">
                     <select
                       id="service"
                       name="service"
                       className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-clarity-primary focus:ring-1 focus:ring-clarity-primary outline-none transition-all bg-stone-50 focus:bg-white appearance-none text-sm"
                     >
-                      <option value="">Selecione o motivo...</option>
-                      <option value="individual">Terapia Individual</option>
-                      <option value="casal">Terapia de Casal</option>
-                      <option value="infantil">Terapia Infantojuvenil</option>
-                      <option value="musicoterapia">Musicoterapia</option>
-                      <option value="avaliacao">Avaliação Psicológica</option>
-                      <option value="outro">Outro / Dúvida</option>
+                      <option value="">{language === 'pt' ? 'Selecione o motivo...' : 'Select the reason...'}</option>
+                      <option value="individual">{language === 'pt' ? 'Terapia Individual' : 'Individual Therapy'}</option>
+                      <option value="casal">{language === 'pt' ? 'Terapia de Casal' : 'Couples Therapy'}</option>
+                      <option value="infantil">{language === 'pt' ? 'Terapia Infantojuvenil' : 'Child/Adolescent Therapy'}</option>
+                      <option value="musicoterapia">{language === 'pt' ? 'Musicoterapia' : 'Music Therapy'}</option>
+                      <option value="avaliacao">{language === 'pt' ? 'Avaliação Psicológica' : 'Psychological Assessment'}</option>
+                      <option value="outro">{language === 'pt' ? 'Outro / Dúvida' : 'Other / Question'}</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
                       <Clock size={16} />
@@ -231,13 +241,13 @@ const Contact: React.FC = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="message" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">Mensagem</label>
+                  <label htmlFor="message" className="text-xs font-bold text-stone-700 ml-1 uppercase tracking-wide">{t('contact.form.message')}</label>
                   <textarea
                     id="message"
                     name="message"
                     rows={3}
                     className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-clarity-primary focus:ring-1 focus:ring-clarity-primary outline-none transition-all bg-stone-50 focus:bg-white resize-none text-sm"
-                    placeholder="Como podemos ajudar?"
+                    placeholder={language === 'pt' ? "Como podemos ajudar?" : "How can we help?"}
                   ></textarea>
                 </div>
 
@@ -248,7 +258,7 @@ const Contact: React.FC = () => {
                   disabled={formStatus === 'submitting'}
                   className="w-full py-3 bg-clarity-primary text-white font-bold rounded-xl hover:bg-clarity-primaryLight transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2 text-sm"
                 >
-                  {formStatus === 'submitting' ? 'A enviar...' : 'Enviar Pedido'}
+                  {formStatus === 'submitting' ? (language === 'pt' ? 'A enviar...' : 'Sending...') : (language === 'pt' ? 'Enviar Pedido' : 'Send Request')}
                 </motion.button>
               </form>
             )}
@@ -276,9 +286,12 @@ const Contact: React.FC = () => {
 
           {/* Overlay info */}
           <div className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md p-6 rounded-3xl shadow-xl max-w-xs border border-white hidden md:block group-hover:translate-y-[-10px] transition-transform duration-500">
-            <h4 className="font-serif text-xl text-stone-800 mb-1">Estamos aqui.</h4>
+            <h4 className="font-serif text-xl text-stone-800 mb-1">
+              {language === 'pt' ? 'Estamos aqui' : 'We are here'}.
+            </h4>
             <p className="text-stone-600 text-sm mb-4 leading-relaxed">
-              Edificio Capitólio, 1º Andar.<br />Visite-nos em Viseu.
+              {language === 'pt' ? 'Edificio Capitólio, 1º Andar.' : 'Capitol Building, 1st Floor.'}<br />
+              {language === 'pt' ? 'Visite-nos em Viseu.' : 'Visit us in Viseu.'}
             </p>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${mapAddress}`}
@@ -286,7 +299,7 @@ const Contact: React.FC = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-clarity-primary text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-clarity-primaryLight transition-colors"
             >
-              Obter Direções
+              {language === 'pt' ? 'Obter Direções' : 'Get Directions'}
             </a>
           </div>
         </motion.div>

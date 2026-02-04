@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Heart, Shield, Sparkles, Clock, Loader2 } from 'lucide-react';
-import { services, team, homeContent } from '../data';
+import { services as allServices, team as allTeam, homeContent as allHomeContent } from '../data';
 import { contentfulClient } from '../lib/contentful';
 import { BlogPost } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language, t } = useLanguage();
+
+  const services = allServices[language];
+  const team = allTeam[language];
+  const homeContent = allHomeContent[language];
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -23,7 +29,7 @@ const Home: React.FC = () => {
           title: item.fields.title,
           excerpt: item.fields.excerpt,
           content: '',
-          date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString('pt-PT', {
+          date: new Date(item.fields.date || item.sys.createdAt).toLocaleDateString(language === 'pt' ? 'pt-PT' : 'en-US', {
             day: '2-digit',
             month: 'long',
             year: 'numeric'
@@ -43,7 +49,7 @@ const Home: React.FC = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [language]);
 
   return (
     <div className="flex flex-col w-full">
@@ -55,15 +61,16 @@ const Home: React.FC = () => {
           <div className="space-y-8 fade-in-up">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-stone-200 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-clarity-primary animate-pulse"></span>
-              <span className="text-xs font-semibold tracking-wide text-clarity-primary uppercase">Saúde Mental & Bem-estar</span>
+              <span className="text-xs font-semibold tracking-wide text-clarity-primary uppercase">{t('home.hero.badge')}</span>
             </div>
 
-            <h1 className="font-serif text-5xl md:text-7xl leading-[1.1] text-clarity-text font-medium">
-              Há experiências que pedem <span className="italic text-clarity-primary">escuta</span>.
-            </h1>
+            <h1
+              className="font-serif text-5xl md:text-7xl leading-[1.1] text-clarity-text font-medium"
+              dangerouslySetInnerHTML={{ __html: t('home.hero.title') }}
+            />
 
             <p className="text-lg text-clarity-muted leading-relaxed max-w-lg">
-              Na Psicologia do 1º Andar, oferecemos um espaço de encontro, escuta e reflexão no coração de Viseu. A mudança começa quando aquilo que foi vivido pode finalmente ser compreendido - em relação, em palavras, em tempo.
+              {t('home.hero.description')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -71,13 +78,13 @@ const Home: React.FC = () => {
                 to="/contactos"
                 className="px-8 py-4 bg-clarity-primary text-white rounded-full font-medium hover:bg-clarity-primaryLight transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 text-center"
               >
-                Agendar Sessão
+                {t('home.hero.cta.primary')}
               </Link>
               <Link
                 to="/servicos"
                 className="px-8 py-4 bg-white text-clarity-text border border-stone-200 rounded-full font-medium hover:bg-stone-50 transition-all text-center group"
               >
-                Nossos Serviços <ArrowRight size={18} className="inline ml-1 transition-transform group-hover:translate-x-1" />
+                {t('home.hero.cta.secondary')} <ArrowRight size={18} className="inline ml-1 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
@@ -97,7 +104,7 @@ const Home: React.FC = () => {
                   <Star size={14} fill="currentColor" />
                   <Star size={14} fill="currentColor" />
                 </div>
-                <span className="font-medium">Equipa de Excelência</span>
+                <span className="font-medium">{t('home.hero.teamBadge')}</span>
               </div>
             </div>
           </div>
@@ -111,7 +118,7 @@ const Home: React.FC = () => {
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 to-transparent p-8">
-                <p className="text-white/90 font-serif italic text-xl">"Um espaço onde se sente em casa."</p>
+                <p className="text-white/90 font-serif italic text-xl">"{t('home.hero.quote')}"</p>
               </div>
             </div>
           </div>
@@ -122,9 +129,9 @@ const Home: React.FC = () => {
       <section className="py-24 bg-white rounded-t-[3rem] md:rounded-t-[4rem] -mt-10 relative z-10 shadow-sm">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl text-clarity-text mb-6">Uma abordagem humana</h2>
+            <h2 className="font-serif text-3xl md:text-5xl text-clarity-text mb-6">{t('home.intro.title')}</h2>
             <p className="text-stone-600 text-lg leading-relaxed">
-              Mais do que intervir sobre problemas, criamos espaço para compreender o que se vive com empatia e rigor científico.
+              {t('home.intro.description')}
             </p>
           </div>
 
@@ -133,22 +140,22 @@ const Home: React.FC = () => {
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-clarity-primary mb-6 shadow-sm">
                 <Heart size={24} />
               </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">Lugar de Empatia</h3>
-              <p className="text-stone-500">Cada história é sagrada. Ouvimos sem julgamento, criando um laço de confiança essencial.</p>
+              <h3 className="font-serif text-xl font-semibold mb-3">{t('home.intro.card1.title')}</h3>
+              <p className="text-stone-500">{t('home.intro.card1.desc')}</p>
             </div>
             <div className="p-8 bg-clarity-bg rounded-[2rem] hover:bg-clarity-accent transition-colors duration-300">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-clarity-primary mb-6 shadow-sm">
                 <Shield size={24} />
               </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">Espaço Seguro</h3>
-              <p className="text-stone-500">A confidencialidade orienta a nossa prática. O espaço foi pensado para oferecer privacidade e conforto.</p>
+              <h3 className="font-serif text-xl font-semibold mb-3">{t('home.intro.card2.title')}</h3>
+              <p className="text-stone-500">{t('home.intro.card2.desc')}</p>
             </div>
             <div className="p-8 bg-clarity-bg rounded-[2rem] hover:bg-clarity-accent transition-colors duration-300">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-clarity-primary mb-6 shadow-sm">
                 <Sparkles size={24} />
               </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">Formação Contínua</h3>
-              <p className="text-stone-500">A nossa equipa mantém-se em constante formação para lhe oferecer as melhores práticas.</p>
+              <h3 className="font-serif text-xl font-semibold mb-3">{t('home.intro.card3.title')}</h3>
+              <p className="text-stone-500">{t('home.intro.card3.desc')}</p>
             </div>
           </div>
         </div>
@@ -161,11 +168,11 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
-              <span className="text-clarity-secondary font-medium tracking-widest uppercase text-sm">Áreas de Atuação</span>
-              <h2 className="font-serif text-3xl md:text-5xl mt-4">Como podemos ajudar</h2>
+              <span className="text-clarity-secondary font-medium tracking-widest uppercase text-sm">{t('home.services.badge')}</span>
+              <h2 className="font-serif text-3xl md:text-5xl mt-4">{t('home.services.title')}</h2>
             </div>
             <Link to="/servicos" className="text-white border-b border-white/30 pb-1 hover:border-white hover:text-clarity-secondary transition-colors">
-              Ver todos os serviços
+              {t('home.services.all')}
             </Link>
           </div>
 
@@ -175,7 +182,7 @@ const Home: React.FC = () => {
                 <h3 className="font-serif text-2xl mb-3">{service.title}</h3>
                 <p className="text-white/70 text-sm leading-relaxed mb-6">{service.shortDescription}</p>
                 <span className="inline-flex items-center text-sm font-medium text-clarity-secondary group-hover:text-white transition-colors">
-                  Saber mais <ArrowRight size={16} className="ml-2" />
+                  {t('blog.readMore')} <ArrowRight size={16} className="ml-2" />
                 </span>
               </Link>
             ))}
@@ -187,8 +194,8 @@ const Home: React.FC = () => {
       <section className="py-24 bg-clarity-bg">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl text-stone-800 mb-4">Quem somos</h2>
-            <p className="text-stone-600 max-w-2xl mx-auto">Profissionais dedicados, unidos pela paixão de ajudar o outro.</p>
+            <h2 className="font-serif text-3xl md:text-5xl text-stone-800 mb-4">{t('home.team.title')}</h2>
+            <p className="text-stone-600 max-w-2xl mx-auto">{t('home.team.description')}</p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -215,22 +222,22 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
-              <span className="text-clarity-primary font-medium tracking-widest uppercase text-sm">Blog</span>
-              <h2 className="font-serif text-3xl md:text-5xl mt-4 text-stone-800">Últimas do 1º Andar</h2>
+              <span className="text-clarity-primary font-medium tracking-widest uppercase text-sm">{t('home.blog.badge')}</span>
+              <h2 className="font-serif text-3xl md:text-5xl mt-4 text-stone-800">{t('home.blog.title')}</h2>
             </div>
             <Link to="/blog" className="text-stone-500 border-b border-stone-200 pb-1 hover:border-clarity-primary hover:text-clarity-primary transition-colors flex items-center">
-              Ler todos os artigos <ArrowRight size={16} className="ml-2" />
+              {t('home.blog.all')} <ArrowRight size={16} className="ml-2" />
             </Link>
           </div>
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="animate-spin text-clarity-primary mb-4" size={40} />
-              <p className="text-stone-500 font-serif italic text-lg">A carregar artigos...</p>
+              <p className="text-stone-500 font-serif italic text-lg">{t('home.blog.loading')}</p>
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20 bg-clarity-bg rounded-[3rem] border border-dashed border-stone-200">
-              <p className="text-stone-500 font-serif italic text-lg">Novos artigos em breve.</p>
+              <p className="text-stone-500 font-serif italic text-lg">{t('home.blog.empty')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -266,12 +273,12 @@ const Home: React.FC = () => {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto bg-clarity-secondary/30 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="font-serif text-4xl md:text-5xl text-stone-800 mb-8">Comece hoje a sua mudança.</h2>
+            <h2 className="font-serif text-4xl md:text-5xl text-stone-800 mb-8">{t('home.cta.title')}</h2>
             <Link
               to="/contactos"
               className="inline-block bg-clarity-primary text-white px-10 py-4 rounded-full font-bold hover:bg-clarity-primaryLight transition-transform hover:scale-105 shadow-xl"
             >
-              Marcar Primeira Consulta
+              {t('home.cta.button')}
             </Link>
           </div>
           <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/40 rounded-full blur-3xl"></div>

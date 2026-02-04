@@ -9,6 +9,7 @@ import TeamMember from './pages/TeamMember';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import { LanguageProvider } from './context/LanguageContext';
 
 // Component to handle scroll to top on route change
 const ScrollToTop: React.FC = () => {
@@ -23,24 +24,26 @@ const ScrollToTop: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <HashRouter>
-      <div className="flex flex-col min-h-screen font-sans antialiased text-stone-800 bg-stone-50 selection:bg-clarity-primary selection:text-white">
-        <ScrollToTop />
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/servicos" element={<Services />} />
-            <Route path="/equipa" element={<Team />} />
-            <Route path="/equipa/:id" element={<TeamMember />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogPost />} />
-            <Route path="/contactos" element={<Contact />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </HashRouter>
+    <LanguageProvider>
+      <HashRouter>
+        <div className="flex flex-col min-h-screen font-sans antialiased text-stone-800 bg-stone-50 selection:bg-clarity-primary selection:text-white">
+          <ScrollToTop />
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/servicos" element={<Services />} />
+              <Route path="/equipa" element={<Team />} />
+              <Route path="/equipa/:id" element={<TeamMember />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
+              <Route path="/contactos" element={<Contact />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </HashRouter>
+    </LanguageProvider>
   );
 };
 

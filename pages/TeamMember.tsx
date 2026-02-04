@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { team } from '../data';
+import { team as allTeam } from '../data';
 import { ChevronLeft, Award, BookOpen, Mail, GraduationCap, Globe, Phone } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const TeamMember: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
+  const team = allTeam[language];
   const member = team.find(m => m.id === id);
 
   useEffect(() => {
@@ -20,10 +23,10 @@ const TeamMember: React.FC = () => {
   return (
     <div className="pt-32 pb-20 bg-clarity-bg min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <Link to="/equipa" className="inline-flex items-center text-stone-500 hover:text-clarity-primary mb-10 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-stone-100">
           <ChevronLeft size={18} />
-          <span className="ml-1 text-sm font-medium">Voltar à equipa</span>
+          <span className="ml-1 text-sm font-medium">{t('blog.back')}</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -31,18 +34,18 @@ const TeamMember: React.FC = () => {
           <div className="lg:col-span-5">
             <div className="sticky top-32 space-y-6">
               <div className="rounded-[2.5rem] overflow-hidden shadow-xl aspect-[4/5] bg-stone-200">
-                <img 
-                  src={member.image} 
-                  alt={member.name} 
+                <img
+                  src={member.image}
+                  alt={member.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-stone-100 space-y-6">
                 <div>
                   <h3 className="font-medium text-stone-800 flex items-center gap-2 mb-3">
                     <Award size={18} className="text-clarity-primary" />
-                    Especializações
+                    {t('team.specializations')}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {member.specializations.map((spec, i) => (
@@ -58,7 +61,7 @@ const TeamMember: React.FC = () => {
                   <div className="border-t border-stone-100 pt-6">
                     <h3 className="font-medium text-stone-800 flex items-center gap-2 mb-3">
                       <Mail size={18} className="text-clarity-primary" />
-                      Contactos Diretos
+                      {t('team.contact')}
                     </h3>
                     <div className="space-y-4 text-sm text-stone-600">
                       {member.email && (
@@ -69,30 +72,30 @@ const TeamMember: React.FC = () => {
                       )}
                       {member.phone && (
                         <div className="flex flex-col">
-                           <span className="text-xs text-stone-400 uppercase tracking-wider mb-1">Telefone</span>
-                           <div className="flex flex-wrap items-center gap-3">
-                              <a href={`tel:${member.phone}`} className="font-medium hover:text-clarity-primary whitespace-nowrap">{member.phone}</a>
-                              <a 
-                                href={`tel:${member.phone}`}
-                                className="inline-flex items-center gap-1.5 bg-clarity-primary text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide hover:bg-clarity-primaryLight transition-colors shadow-sm"
-                              >
-                                <Phone size={12} fill="currentColor" />
-                                Ligar Agora
-                              </a>
-                           </div>
+                          <span className="text-xs text-stone-400 uppercase tracking-wider mb-1">{t('contact.form.phone')}</span>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <a href={`tel:${member.phone}`} className="font-medium hover:text-clarity-primary whitespace-nowrap">{member.phone}</a>
+                            <a
+                              href={`tel:${member.phone}`}
+                              className="inline-flex items-center gap-1.5 bg-clarity-primary text-white px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide hover:bg-clarity-primaryLight transition-colors shadow-sm"
+                            >
+                              <Phone size={12} fill="currentColor" />
+                              {language === 'pt' ? 'Ligar agora' : 'Call now'}
+                            </a>
+                          </div>
                         </div>
                       )}
                       {member.website && (
                         <div className="flex flex-col">
-                           <span className="text-xs text-stone-400 uppercase tracking-wider mb-0.5">Website / Projeto</span>
-                           <a 
-                            href={member.website} 
-                            target="_blank" 
+                          <span className="text-xs text-stone-400 uppercase tracking-wider mb-0.5">Website / Projeto</span>
+                          <a
+                            href={member.website}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium hover:text-clarity-primary flex items-center gap-1"
                           >
-                             pra-semana.pt <Globe size={14} />
-                           </a>
+                            pra-semana.pt <Globe size={14} />
+                          </a>
                         </div>
                       )}
                     </div>
@@ -113,19 +116,19 @@ const TeamMember: React.FC = () => {
 
               <div className="grid gap-8">
                 <div className="p-6 bg-clarity-bg rounded-3xl">
-                   <h3 className="font-serif text-xl text-stone-800 mb-3 flex items-center gap-2">
+                  <h3 className="font-serif text-xl text-stone-800 mb-3 flex items-center gap-2">
                     <BookOpen size={20} className="text-clarity-primary" />
-                    Abordagem Terapêutica
+                    {t('team.approach')}
                   </h3>
                   <p className="text-stone-700">{member.approach}</p>
                 </div>
 
                 <div className="p-6 bg-clarity-bg rounded-3xl">
-                   <h3 className="font-serif text-xl text-stone-800 mb-3 flex items-center gap-2">
+                  <h3 className="font-serif text-xl text-stone-800 mb-3 flex items-center gap-2">
                     <GraduationCap size={20} className="text-clarity-primary" />
-                    Percurso Académico
+                    {t('team.academic')}
                   </h3>
-                   <ul className="space-y-2">
+                  <ul className="space-y-2">
                     {member.academic.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-stone-600 text-sm md:text-base">
                         <span className="mt-2 w-1.5 h-1.5 bg-clarity-primary rounded-full shrink-0"></span>
@@ -139,14 +142,18 @@ const TeamMember: React.FC = () => {
 
             <div className="bg-clarity-primary text-white p-8 md:p-12 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
               <div>
-                <h4 className="text-2xl font-serif mb-2">Agendar Consulta</h4>
-                <p className="text-white/80 text-sm">Verifique a disponibilidade de {member.name.split(' ')[0]}.</p>
+                <h4 className="text-2xl font-serif mb-2">{t('nav.button')}</h4>
+                <p className="text-white/80 text-sm">
+                  {language === 'pt'
+                    ? `Verifique a disponibilidade de ${member.name.split(' ')[0]}.`
+                    : `Check ${member.name.split(' ')[0]}'s availability.`}
+                </p>
               </div>
-              <Link 
-                to="/contactos" 
+              <Link
+                to="/contactos"
                 className="bg-white text-clarity-primary px-8 py-4 rounded-full font-bold hover:bg-stone-100 transition-colors whitespace-nowrap shadow-sm"
               >
-                Solicitar Marcação
+                {t('home.hero.cta.primary')}
               </Link>
             </div>
 
